@@ -28,10 +28,9 @@ compare_file_timestamps() {
 compare_file_timestamps "$source_file"
 
 address="$(printf "%s" "$2" | tr 'a-f' 'A-F')"
-dec_address="$(printf "16iAo%sp\n" "$address" | dc || kill 0)"
+dec_address="$(printf "16iAo%s 100-p\n" "$address" | dc || kill 0)"
 # add 1 because the zeroth byte is on the first line
 dec_address="$((dec_address + 1))"
-# TODO: should we subtract the #0100 offset or request the user to do that?
 
 is_integer() {
     printf %d "$1" >/dev/null 2>&1
