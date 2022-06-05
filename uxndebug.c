@@ -47,6 +47,8 @@ Program p;
 static int litlast = 0;
 static int jsrlast = 0;
 
+static int token_number = 0;
+
 /* clang-format off */
 
 static char ops[][4] = {
@@ -141,6 +143,7 @@ makemacro(char *name, FILE *f)
 	m = &p.macros[p.mlen++];
 	scpy(name, m->name, 0x40);
 	while(fscanf(f, "%63s", word) == 1) {
+		token_number++;
 		if(word[0] == '{') continue;
 		if(word[0] == '}') break;
 		if(word[0] == '%')
@@ -251,9 +254,11 @@ doinclude(const char *filename)
 	char w[0x40];
 	if(!(f = fopen(filename, "r")))
 		return error("Include missing", filename);
-	while(fscanf(f, "%63s", w) == 1)
+	while(fscanf(f, "%63s", w) == 1) {
+		token_number++;
 		if(!parse(w, f))
 			return error("Unknown token", w);
+	}
 	fclose(f);
 	return 1;
 }
@@ -271,6 +276,7 @@ parse(char *w, FILE *f)
 		if(slen(w) != 1) fprintf(stderr, "-- Malformed comment: %s\n", w);
 		i = 1; /* track nested comment depth */
 		while(fscanf(f, "%63s", word) == 1) {
+			token_number++;
 			if(slen(word) != 1)
 				continue;
 			else if(word[0] == '(')
@@ -418,9 +424,11 @@ assemble(FILE *f)
 {
 	char w[0x40];
 	scpy("on-reset", p.scope, 0x40);
-	while(fscanf(f, "%63s", w) == 1)
+	while(fscanf(f, "%63s", w) == 1) {
+		token_number++;
 		if(!parse(w, f))
 			return error("Unknown token", w);
+	}
 	return resolve();
 }
 
