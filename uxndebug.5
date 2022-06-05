@@ -31,5 +31,39 @@ are created by running:
 .Bd -literal -offset indent
 uxndebug example.tal example.rom
 .Ed
+.Sh EXAMPLES
+Consider a source file
+.Pa test.tal :
+.Bd -literal -offset indent -compact
+|0100
+ #ff POP
+BRK
+.Ed
+.Pp
+Running the command
+.Bd -literal -offset indent -compact
+uxndebug example.tal example.rom
+.Ed
+produces files
+.Pa test.tal.debug
+and
+.Pa test.rom ;
+the debug file contains:
+.Bd -literal -offset indent -compact
+2
+2
+3
+4
+.Ed
+and the hexdump of the rom is
+.Bd -literal -offset indent -compact
+80 ff 02 00
+.Ed
+.Pp
+This means that the first byte in the rom (the first line in
+.Pa test.tal.debug )
+was produced by the second token in the source file, and the third byte
+in the rom (the third line in the debug file) was produced by the third token in the source file,
+and so on.
 .Sh SEE ALSO
 .Xr uxndebug 1
