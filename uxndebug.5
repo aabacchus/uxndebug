@@ -1,0 +1,35 @@
+.Dd June 5, 2022
+.Dt UXNDEBUG 5
+.Os
+.Sh NAME
+.Nm uxndebug ,
+.Nm .tal.debug
+.Nd uxntal debug info file format
+.Sh DESCRIPTION
+The format of debug information for an uxntal rom file is documented in this file.
+.Pp
+Each line of the debug file is terminated by a single
+.Aq newline
+character, and contains a single hexadecimal number.
+The line number of the file corresponds to the
+.Em byte
+of the rom,
+and the number written on the line signifies which
+.Em token
+in the source files was assembled into that
+.Em byte .
+The name of the debug file is used to identify which source file contains the relevant
+.Em token Ns s .
+.Sh FILES
+For a source file
+.Pa example.tal ,
+the corresponding rom
+.Pa example.rom
+and debug information file
+.Pa example.tal.debug
+are created by running:
+.Bd -literal -offset indent
+uxndebug example.tal example.rom
+.Ed
+.Sh SEE ALSO
+.Xr uxndebug 1

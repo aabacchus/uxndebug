@@ -48,6 +48,9 @@ static int litlast = 0;
 static int jsrlast = 0;
 
 static int token_number = 0;
+static int debug_lineno = 0;
+static char *debug_filename = "debug.tal.debug";
+FILE *debug_file = NULL;
 
 /* clang-format off */
 
@@ -191,6 +194,17 @@ makereference(char *scope, char *label, Uint16 addr)
 	return 1;
 }
 
+static void
+debug_next_byte(void) {
+	while (p.ptr - 0x0100 != debug_lineno) {
+		fprintf(debug_file, "\n");
+		debug_lineno++;
+		/* TODO: better way to handle this is to write to buffer with byte,token pairs, then write to file at end */
+	}
+	fprintf(debug_file, "%d\n", token_number);
+	debug_lineno++;
+}
+
 static int
 writebyte(Uint8 b)
 {
@@ -200,6 +214,7 @@ writebyte(Uint8 b)
 		return error("Writing after the end of RAM", "");
 	else if(p.ptr < p.length)
 		return error("Memory overwrite", "");
+	debug_next_byte();
 	p.data[p.ptr++] = b;
 	p.length = p.ptr;
 	litlast = 0;
@@ -211,11 +226,14 @@ static int
 writeopcode(char *w)
 {
 	Uint8 res;
+	/* disable optimizations which go back
 	if(jsrlast && scmp(w, "JMP2r", 5)) { /* tail-call optimization */
+	/*
 		p.data[p.ptr - 1] = jsrlast == 2 ? findopcode("JMP2") : findopcode("JMP");
 		jsrlast = 0;
 		return 1;
 	}
+	*/
 	res = writebyte(findopcode(w));
 	if(scmp(w, "JSR2", 4))
 		jsrlast = 2;
@@ -235,12 +253,15 @@ writeshort(Uint16 s, int lit)
 static int
 writelitbyte(Uint8 b)
 {
+	/* disable optimizations which go back
 	if(litlast) { /* literals optimization */
+	/*
 		Uint8 hb = p.data[p.ptr - 1];
 		p.ptr -= 2;
 		p.length = p.ptr;
 		return writeshort((hb << 8) + b, 1);
 	}
+	*/
 	if(!writebyte(findopcode("LIT"))) return 0;
 	if(!writebyte(b)) return 0;
 	litlast = 1;
@@ -454,6 +475,12 @@ int
 main(int argc, char *argv[])
 {
 	FILE *src, *dst;
+	debug_file = fopen(debug_filename, "w");
+	if (debug_file == NULL) {
+		perror(debug_filename);
+		return 1;
+	}
+
 	if(argc < 3)
 		return !error("usage", "input.tal output.rom");
 	if(!(src = fopen(argv[1], "r")))
@@ -466,5 +493,6 @@ main(int argc, char *argv[])
 		return !error("Assembly", "Output rom is empty.");
 	fwrite(p.data + TRIM, p.length - TRIM, 1, dst);
 	review(argv[2]);
+	fclose(debug_file);
 	return 0;
 }
