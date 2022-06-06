@@ -12,6 +12,8 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
 WITH REGARD TO THIS SOFTWARE.
 */
 
+#define UXNDEBUG_VERSION 1
+
 #define TRIM 0x0100
 #define LENGTH 0x10000
 
@@ -473,6 +475,9 @@ save_debug_info(char *srcname) {
 	debug_file = fopen(debug_filename, "wb");
 	if (debug_file == NULL)
 		return error(debug_filename, "Failed to open.");
+
+	/* write version number */
+	fprintf(debug_file, "%u%c%c", UXNDEBUG_VERSION, 0x0A, 0x0A);
 
 	/* Avoid writing '\n' because we can't depend on any particular representation. */
 	for (i = 0; i < p.length - TRIM; i++) {
