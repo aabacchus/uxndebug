@@ -54,11 +54,11 @@ print_highlighted() {
     index="$1"
     shift
     j=1
-    for token; do
+    for tok; do
         if [ "$j" -eq "$index" ]; then
-            printf " \033[1;31m%s\033[m" "$token"
+            printf " \033[1;31m%s\033[m" "$tok"
         else
-            printf " %s" "$token"
+            printf " %s" "$tok"
         fi
         j="$((j + 1))"
     done
@@ -69,20 +69,22 @@ scan() {
     i="$1"
     lineno=0
     f="$2"
-    while read -r line; do
+    while read -r line || return 0; do
         lineno="$((lineno + 1))"
         # word splitting is desired.
         # shellcheck disable=SC2086
         set -- $line
+        i="$((i + $#))"
         for op; do case "$op" in "~"*)
-                printf "\033[1;33mWARNING\033[m: include not followed, output probably incorrect\n" >&2
+                cur_line="$lineno" cur_file="$f"
+                scan "$i" "${op#'~'}"
+                lineno="$cur_line" f="$cur_file"
             ;; esac
         done
-        i="$((i + $#))"
         [ "$i" -ge "$token" ] && {
-            printf "line %d: " "$lineno"
+            printf "%s line %d: " "$f" "$lineno"
             print_highlighted "$(($# - i + token))" "$@"
-            break
+            exit 0
         }
     done < "$f"
 }
