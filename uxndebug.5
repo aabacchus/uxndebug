@@ -1,6 +1,6 @@
 .Dd June 5, 2022
 .Dt UXNDEBUG 5
-.Os
+.Os uxndebug version 1
 .Sh NAME
 .Nm uxndebug ,
 .Nm .tal.debug
@@ -9,12 +9,34 @@
 The format of debug information for an uxntal rom file is documented in this file.
 .Pp
 Each line of the debug file is terminated by a single
-.Aq newline
-character, and contains a single decimal number.
-The line number of the file corresponds to the
+.Aq 0x0A
+line feed character, and contains an optional single decimal number written in the ASCII characters
+.Sq 0
+-
+.Sq 9 .
+.Pp
+The first number in the file is a decimal version number written in ASCII characters, followed
+by two line feeds.
+.Pp
+After these two line feeds, the debug information begins.
+Hereafter,
+.Dq Va byte number
+refers to the number of
+.Aq 0x0A
+bytes encountered after the first two.
+Therefore, after the first two, the
+.Va "byte number"
+starts at 0 and increases by one on each new line.
+Therefore, for some systems, the value of the
+.Va "byte number"
+is equal to the line number in the file minus 2.
+.Pp
+The
+.Va "byte number"
+in the file corresponds to the
 .Em byte
 of the rom,
-and the number written on the line signifies which
+and the number written on that line signifies which
 .Em token
 in the source files was assembled into that
 .Em byte .
@@ -47,23 +69,33 @@ uxndebug example.tal example.rom
 produces files
 .Pa test.tal.debug
 and
-.Pa test.rom ;
-the debug file contains:
+.Pa test.rom .
+.Pp
+The file
+.Pa test.tal.debug
+contains:
 .Bd -literal -offset indent -compact
+1
+
 2
 2
 3
 4
 .Ed
-and the hexdump of the rom is
+where after each number, the new line represents a
+.Aq 0x0A
+byte.
+.Pp
+The hexdump of the rom is
 .Bd -literal -offset indent -compact
 80 ff 02 00
 .Ed
 .Pp
 This means that the first byte in the rom (the first line in
-.Pa test.tal.debug )
+.Pa test.tal.debug
+after the version line and blank line, so actually the third line in the file)
 was produced by the second token in the source file, and the third byte
-in the rom (the third line in the debug file) was produced by the third token in the source file,
+in the rom (the 3+2 = fifth line in the debug file) was produced by the third token in the source file,
 and so on.
 .Sh SEE ALSO
 .Xr uxndebug 1
