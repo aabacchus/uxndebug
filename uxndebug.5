@@ -42,6 +42,11 @@ in the source files was assembled into that
 .Em byte .
 The name of the debug file is used to identify which source file contains the relevant
 .Em token Ns s .
+.Pp
+If a line after the version information does not contain any number, an unexpected error
+has occurred in generating debug information for that byte and no information about a token should
+be assumed. However, a debug file may continue to be parsed even if an empty line is present;
+later lines should not be affected by an error for earlier bytes.
 .Sh FILES
 For a source file
 .Pa example.tal ,
