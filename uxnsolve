@@ -32,6 +32,11 @@ dec_address="$(printf "16iAo%s 100-p\n" "$address" | dc || kill 0)"
 # add 1 because the zeroth byte is on the first line
 dec_address="$((dec_address + 1))"
 
+[ "$dec_address" -lt 0 ] && {
+    printf "address %s is in zero page, don't subtract 0x0100\n" "$address"
+    exit 1
+}
+
 is_integer() {
     printf %d "$1" >/dev/null 2>&1
 }
