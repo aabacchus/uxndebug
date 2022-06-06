@@ -1,3 +1,4 @@
+#include <locale.h>
 #include <stdio.h>
 
 /*
@@ -469,15 +470,16 @@ save_debug_info(char *srcname) {
 
 	if (snprintf(debug_filename, 0x100, "%s.debug", srcname) < 0)
 		return 0;
-	debug_file = fopen(debug_filename, "w");
+	debug_file = fopen(debug_filename, "wb");
 	if (debug_file == NULL)
 		return error(debug_filename, "Failed to open.");
 
+	/* Avoid writing '\n' because we can't depend on any particular representation. */
 	for (i = 0; i < p.length - TRIM; i++) {
 		if (dbg.tokens[i] == 0)
-			fprintf(debug_file, "\n");
+			fprintf(debug_file, "%c", 0x0A);
 		else
-			fprintf(debug_file, "%d\n", dbg.tokens[i]);
+			fprintf(debug_file, "%u%c", dbg.tokens[i], 0x0A);
 	}
 
 	fclose(debug_file);
@@ -488,6 +490,7 @@ int
 main(int argc, char *argv[])
 {
 	FILE *src, *dst;
+	setlocale(LC_ALL, "C");
 	if(argc < 3)
 		return !error("usage", "input.tal output.rom");
 	if(!(src = fopen(argv[1], "r")))
