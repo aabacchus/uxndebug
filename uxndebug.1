@@ -1,0 +1,55 @@
+.Dd June 7, 2022
+.Dt UXNDEBUG 1
+.Os uxndebug version 1
+.Sh NAME
+.Nm uxndebug
+.Nd uxn assembler and debug info generator
+.Sh SYNOPSIS
+.Nm
+.Op Fl g
+.Ar input.tal
+.Ar output.rom
+.Sh DESCRIPTION
+.Nm
+is an assembler for the uxntal language.
+It assembles the source file
+.Ar input.tal
+into the binary rom
+.Ar output.rom .
+It is identical to the assembler
+.Ic uxnasm ,
+but with an additional optional flag
+.Fl g .
+.Pp
+When the
+.Fl g
+flag is supplied,
+.Nm
+generates an additional file
+.Pa input.tal.debug
+which contains debug info in the format described in
+.Xr uxndebug 5 .
+The filename of the debug info is the concatenation of
+.Ar input.tal
+and the suffix
+.Pa .debug .
+.Sh EXAMPLES
+For a source file
+.Pa example.tal ,
+the corresponding rom
+.Pa example.rom
+and debug information file
+.Pa example.tal.debug
+are created by running:
+.Bd -literal -offset indent
+uxndebug -g example.tal example.rom
+.Ed
+.Sh SEE ALSO
+.Xr uxndebug 5
+.Pp
+For a description of the source language and macros supported by
+.Nm ,
+consult the documentation for
+.Ic uxnasm .
+.Sh AUTHORS
+.An phoebos Aq Mt ben@bvnf.space
