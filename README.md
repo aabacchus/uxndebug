@@ -4,7 +4,7 @@ This is a suite of tools for use in debugging uxn programs.
 
 ### uxndebug
 This is a modified version of uxnasm which operates exactly the same way, but
-also generates a debug info file when run. The format of this file is documented
+also generates a debug info file when run with the `-g` flag. The format of this file is documented
 in the `uxndebug(5)` manpage.
 
 ### uxnsolve
@@ -19,7 +19,7 @@ make
 
 Then compile your program:
 ```
-./uxndebug test.tal test.rom
+./uxndebug -g test.tal test.rom
 ```
 This will generate a file `test.tal.debug` in addition to the rom.
 

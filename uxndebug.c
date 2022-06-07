@@ -495,9 +495,15 @@ int
 main(int argc, char *argv[])
 {
 	FILE *src, *dst;
+	int do_debug = 0;
 	setlocale(LC_ALL, "C");
+	if(argc > 1 && argv[1][0] == '-' && argv[1][1] == 'g' && argv[1][2] == '\0') {
+		do_debug = 1;
+		argc--;
+		argv++;
+	}
 	if(argc < 3)
-		return !error("usage", "input.tal output.rom");
+		return !error("usage", "[-g] input.tal output.rom");
 	if(!(src = fopen(argv[1], "r")))
 		return !error("Invalid input", argv[1]);
 	if(!assemble(src))
@@ -508,7 +514,7 @@ main(int argc, char *argv[])
 		return !error("Assembly", "Output rom is empty.");
 	fwrite(p.data + TRIM, p.length - TRIM, 1, dst);
 	review(argv[2]);
-	if (!save_debug_info(argv[1]))
+	if (do_debug && !save_debug_info(argv[1]))
 		return !error("Debug", "Failed to save info.");
 	return 0;
 }
