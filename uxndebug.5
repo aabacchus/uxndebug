@@ -8,6 +8,11 @@
 .Sh DESCRIPTION
 The format of debug information for an uxntal rom file is documented in this file.
 .Pp
+The basename of the file containing debug information for a source file
+.Pa foo.tal
+must be named
+.Pa foo.tal.debug .
+.Pp
 Each line of the debug file is terminated by a single
 .Aq 0x0A
 line feed character, and contains an optional single decimal number written in the ASCII characters
@@ -45,7 +50,8 @@ The name of the debug file is used to identify which source file contains the re
 .Pp
 If a line after the version information does not contain any number, an unexpected error
 has occurred in generating debug information for that byte and no information about a token should
-be assumed. However, a debug file may continue to be parsed even if an empty line is present;
+be assumed.
+However, a debug file may continue to be parsed even if an empty line is present;
 later lines should not be affected by an error for earlier bytes.
 .Sh FILES
 For a source file
@@ -55,9 +61,7 @@ the corresponding rom
 and debug information file
 .Pa example.tal.debug
 are created by running:
-.Bd -literal -offset indent
-uxndebug -g example.tal example.rom
-.Ed
+.Dl uxndebug -g example.tal example.rom
 .Sh EXAMPLES
 Consider a source file
 .Pa test.tal :
@@ -68,9 +72,7 @@ BRK
 .Ed
 .Pp
 Running the command
-.Bd -literal -offset indent -compact
-uxndebug -g test.tal test.rom
-.Ed
+.Dl uxndebug -g test.tal test.rom
 produces files
 .Pa test.tal.debug
 and
