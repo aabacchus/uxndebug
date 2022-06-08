@@ -57,3 +57,10 @@ line 289:  DUP #04 SFT ,print-nibble-hex JSR
 Remember to regenerate the debug info after changing your source code, otherwise it won't make
 sense. uxnsolve will print a big WARNING if it notices that your source file is newer than the
 debug info.
+
+## Ideas
+
+Some ideas for applications using this debug info.
+
+* An emulator which can step through source code instructions word by word on a
+button press, highlighting the current position in another window.
