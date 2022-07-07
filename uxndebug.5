@@ -1,12 +1,12 @@
 .Dd June 7, 2022
 .Dt UXNDEBUG 5
-.Os uxndebug version 1
+.Os uxndebug version 2
 .Sh NAME
 .Nm uxndebug ,
 .Nm .tal.debug
 .Nd uxntal debug info file format
 .Sh DESCRIPTION
-The format of debug information for an uxntal rom file is documented in this file.
+Version 2 of the format of debug information for an uxntal rom file is documented in this file.
 .Pp
 The basename of the file containing debug information for a source file
 .Pa foo.tal
@@ -15,10 +15,15 @@ must be named
 .Pp
 Each line of the debug file is terminated by a single
 .Aq 0x0A
-line feed character, and contains an optional single decimal number written in the ASCII characters
+line feed character, and contains one decimal number written in the ASCII characters
 .Sq 0
 -
-.Sq 9 .
+.Sq 9
+and an optional ASCII string label.
+The label should be a full label, ie
+.Qq absolute
+or
+.Qq absolute/sublabel .
 .Pp
 The first number in the file is a decimal version number written in ASCII characters, followed
 by two line feeds.
@@ -68,6 +73,7 @@ Consider a source file
 .Bd -literal -offset indent -compact
 |0100
  #ff POP
+@end
 BRK
 .Ed
 .Pp
@@ -87,7 +93,7 @@ contains:
 2
 2
 3
-4
+4 end
 .Ed
 where after each number, the new line represents a
 .Aq 0x0A
