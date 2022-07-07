@@ -20,10 +20,14 @@ line feed character, and contains one decimal number written in the ASCII charac
 -
 .Sq 9
 and an optional ASCII string label.
-The label should be a full label, ie
+A label should be a full label, ie
 .Qq absolute
 or
 .Qq absolute/sublabel .
+If the number is not present then there should be no label.
+A label should be separated from the number by a single space character, one
+.Aq 0x20
+byte.
 .Pp
 The first number in the file is a decimal version number written in ASCII characters, followed
 by two line feeds.
